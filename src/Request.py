@@ -2,7 +2,7 @@ import requests
 from collections import namedtuple
 
 from . import utils as utl
-from brainboost_data_source_requests_package.UserAgentPool import UserAgentDatabase
+from UserAgentPool import UserAgentDatabase
 
 
 class Request(object):

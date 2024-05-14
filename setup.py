@@ -21,14 +21,12 @@ setup(
         'Programming Language :: Python :: 3.9',
         'Operating System :: OS Independent',
     ],
-    python_requires='>=3.6',
+    python_requires='>=3.10',
     install_requires=[
-        'dependency1',
-        'dependency2',
-    ],
-    entry_points={
-        'console_scripts': [
-            'your_script_name = your_package_name.module_name:main_function',
-        ],
-    },
+        'tinydb==3.8.1'
+        'requests==2.31.0',
+        'schedule==1.2.1',
+        'aiohttp==3.9.5'
+        'search_engines @ git+https://github.com/PabloBorda/tools_goldenthinkerextractor.git@7bb819ba7398726876467d64bb777e28b4a9984d#egg=search_engines&subdirectory=Search-Engines-Scraper'
+    ]
 )
