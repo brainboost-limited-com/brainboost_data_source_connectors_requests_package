@@ -29,14 +29,14 @@ if __name__ == "__main__":
     proxy = RequestProxy()
     
     # Example GET request
-    get_url = "https://api.example.com/data"
+    get_url = "https://api.whatismyip.com/data"
     get_params = {"key": "value"}
     get_response = proxy.get(get_url, params=get_params)
     if get_response:
         print("GET Response:", get_response)
     
     # Example POST request
-    post_url = "https://api.example.com/submit"
+    post_url = "https://api.whatismyip.com/submit"
     post_data = {"name": "John", "age": 30}
     post_response = proxy.post(post_url, data=post_data)
     if post_response:
