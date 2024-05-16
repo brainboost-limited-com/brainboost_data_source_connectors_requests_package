@@ -2,14 +2,14 @@ import requests
 from collections import namedtuple
 
 from . import utils as utl
-from UserAgentPool import UserAgentDatabase
+from src.UserAgentPool import UserAgentPool
 
 
 class Request(object):
 
     '''Performs HTTP requests. A `requests` wrapper, essentialy'''
     def __init__(self, timeout=10, proxy=None,user_agent='random'):
-        self._useragent_database = UserAgentDatabase()
+        self._useragent_database = UserAgentPool()
         self.session = requests.session()
         self.session.proxies = self._set_proxy(proxy)
         if user_agent == 'random':

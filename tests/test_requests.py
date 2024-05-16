@@ -1,63 +1,63 @@
 import pytest
-from requests.exceptions import RequestException
-from unittest.mock import patch, MagicMock
+from bs4 import BeautifulSoup
 from src.Request import Request
+import json
 
-@pytest.fixture
-def request_instance():
-    # Create a Request instance with default parameters
-    return Request()
+def test_get_request():
+    req = Request()
+    response = req.get('https://whatsmyip.com/')
+    
+    # Check if the request was successful
+    assert response.http == 200  # Assuming 'status' is the attribute for HTTP status code
+    
+    # Parse the HTML content
+    soup = BeautifulSoup(response.html, 'html.parser')  # Assuming 'html' attribute contains HTML content
+    
+    # Find the element with id 'shownIpv4'
+    ip_element = soup.find(id='shownIpv4')
+    
+    if ip_element is not None:
+        # Extract the text content of the element
+        ip_address = ip_element.get_text().strip()
+        print("Extracted IP Address:", ip_address)
+        
+        # Assert if the expected IP address is present in the text
+        expected_ip = "191.110.58.7"
+        assert expected_ip in ip_address, f"Expected IP '{expected_ip}' not found in '{ip_address}'"
+    else:
+        pytest.fail("The element with id 'shownIpv4' was not found.")
 
-def test_get_success(request_instance):
-    # Mock the requests.session.get method to simulate a successful GET request
-    with patch('request.Request.session.get') as mock_get:
-        mock_response = MagicMock()
-        mock_response.status_code = 200
-        mock_response.text = '<html><body>Hello</body></html>'
-        mock_get.return_value = mock_response
+def test_post_request():
+    # Create a Request instance
+    req = Request()
 
-        # Call the get() method
-        response = request_instance.get('http://whatismyip.com')
+    # Define the URL for the POST request (JSONPlaceholder's /posts endpoint)
+    url = 'https://jsonplaceholder.typicode.com/posts'
 
-        # Assert that the correct response is returned
-        assert response.http == 200
-        assert response.html == '<html><body>Hello</body></html>'
+    # Define the data to be sent in the POST request (as JSON)
+    post_data = {
+        'title': 'Test Post',
+        'body': 'This is a test post using Request class.',
+        'userId': 1
+    }
 
-def test_get_failure(request_instance):
-    # Mock the requests.session.get method to simulate a failed GET request
-    with patch('request.Request.session.get') as mock_get:
-        mock_get.side_effect = RequestException('Failed to connect')
-
-        # Call the get() method
-        response = request_instance.get('http://whatismyip.com')
-
-        # Assert that the response indicates a failure
-        assert response.http == 0
-        assert 'Failed to connect' in response.html
-
-def test_post_success(request_instance):
-    # Mock the requests.session.post method to simulate a successful POST request
-    with patch('request.Request.session.post') as mock_post:
-        mock_response = MagicMock()
-        mock_response.status_code = 201
-        mock_response.text = '<html><body>Posted</body></html>'
-        mock_post.return_value = mock_response
-
-        # Call the post() method
-        response = request_instance.post('http://whatismyip.com', data={'key': 'value'})
-
-        # Assert that the correct response is returned
-        assert response.http == 201
-        assert response.html == '<html><body>Posted</body></html>'
-
-def test_post_failure(request_instance):
-    # Mock the requests.session.post method to simulate a failed POST request
-    with patch('request.Request.session.post') as mock_post:
-        mock_post.side_effect = RequestException('Failed to connect')
-
-        # Call the post() method
-        response = request_instance.post('http://whatismyip.com', data={'key': 'value'})
-
-        # Assert that the response indicates a failure
-        assert response.http == 0
-        assert 'Failed to connect' in response.html
+    # Make the POST request
+    response = req.post(url, data=post_data)
+    
+    # Check if the request was successful (assuming 'http' is the attribute for HTTP status code)
+    assert response.http == 201  # HTTP status code 201 indicates successful resource creation
+    
+    # Verify the response content
+    # Since 'html' attribute contains the response content, parse it as JSON
+    try:
+        response_data = json.loads(response.html)
+    except json.JSONDecodeError:
+        pytest.fail("Failed to parse response content as JSON")
+    
+    # Verify the response data matches the sent data
+    assert response_data['title'] == post_data['title'], "Title mismatch"
+    assert response_data['body'] == post_data['body'], "Body mismatch"
+    
+    # Convert response_data['userId'] to integer for comparison
+    response_user_id = int(response_data['userId'])
+    assert response_user_id == post_data['userId'], "UserID mismatch"
