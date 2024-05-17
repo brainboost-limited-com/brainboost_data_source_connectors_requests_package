@@ -28,6 +28,7 @@ setup(
         'schedule==1.2.1',
         'aiohttp==3.9.5',
         'pytest-asyncio',
+        'requests[socks]',
         'search_engines @ git+https://github.com/PabloBorda/tools_goldenthinkerextractor.git@7bb819ba7398726876467d64bb777e28b4a9984d#egg=search_engines&subdirectory=Search-Engines-Scraper'
     ]
 )
