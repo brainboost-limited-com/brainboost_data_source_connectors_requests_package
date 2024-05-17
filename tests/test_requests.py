@@ -5,7 +5,7 @@ import json
 
 def test_get_request():
     req = Request()
-    response = req.get('https://whatsmyip.com/')
+    response = req.get(page='https://whatsmyip.com/',data={})
     
     # Check if the request was successful
     assert response.http == 200  # Assuming 'status' is the attribute for HTTP status code
@@ -42,7 +42,7 @@ def test_post_request():
     }
 
     # Make the POST request
-    response = req.post(url, data=post_data)
+    response = req.post(page=url,data=post_data)
     
     # Check if the request was successful (assuming 'http' is the attribute for HTTP status code)
     assert response.http == 201  # HTTP status code 201 indicates successful resource creation

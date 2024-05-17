@@ -1,7 +1,7 @@
-import asyncio
+
 import random
 import requests
-import schedule
+
 from tinydb import Query, TinyDB
 import time
 
@@ -16,23 +16,25 @@ class ProxyPool:
         self.download_and_update_proxies()
 
     def download_and_update_proxies(self,more_proxies_json=None):
-        try:
-            if (more_proxies_json==None):
-                response = requests.get(self.proxy_source_urls[0])
-            else:
-                self.proxy_source_urls.push(more_proxies_json)
-                response = requests.get(self.proxy_source_urls[-1])
+        timestamp = int(time.time())
+        if (timestamp // 60) % 20 == 0:
+            try:
+                if (more_proxies_json==None):
+                    response = requests.get(self.proxy_source_urls[0])
+                else:
+                    self.proxy_source_urls.push(more_proxies_json)
+                    response = requests.get(self.proxy_source_urls[-1])
 
-            response.raise_for_status()
-            proxies_data = response.json()
+                response.raise_for_status()
+                proxies_data = response.json()
 
-            for proxy in proxies_data:
-                # Assuming proxy structure in JSON: {"ip": "192.168.1.1", "port": "8080"}
+                for proxy in proxies_data:
+                    # Assuming proxy structure in JSON: {"ip": "192.168.1.1", "port": "8080"}
 
-                self.insert_proxy_if_not_exists(proxy)
+                    self.insert_proxy_if_not_exists(proxy)
 
-        except requests.RequestException as e:
-            print(f"Error downloading or parsing JSON data: {e}")
+            except requests.RequestException as e:
+                print(f"Error downloading or parsing JSON data: {e}")
 
 
 
@@ -42,7 +44,7 @@ class ProxyPool:
             (Proxy.ip == proxy['ip']) & (Proxy.port == proxy['port'])
         )
         
-        proxy['request_time'] = self.test_proxy()
+        proxy['request_time'] = self.test_proxy(proxy=proxy)
         if not existing_proxy:            
             self.proxies_db.insert(proxy)
             print(f"Inserted proxy: {proxy}")
@@ -93,7 +95,7 @@ class ProxyPool:
 
 
 
-    def test_proxy(proxy):
+    def test_proxy(self,proxy):
         test_url = "http://httpbin.org/ip"
         try:
             start_time = time.time()  # Record the start time

@@ -11,20 +11,21 @@ class Request(object):
     def __init__(self, timeout=10, proxy=None,user_agent='random'):
         self._useragent_database = UserAgentPool()
         self.session = requests.session()
-        self.session.proxies = self._set_proxy(proxy)
+        self.session.proxies = proxy
         if user_agent == 'random':
-            self.session.headers['User-Agent'] = self._useragent_database.get_random_useragent()
+            self.session.headers['User-Agent'] = self._useragent_database.get_random_user_agent()
         else:
             self.session.headers['User-Agent'] = user_agent
         self.session.headers['Accept-Language'] = 'en-GB,en;q=0.5'
         self.timeout = timeout
         self.response = namedtuple('response', ['http', 'html'])
+        self.my_ip = None
 
-    def get(self, page):
+    def get(self, page, data):
         '''Submits a HTTP GET request.'''
         page = self._quote(page)
         try:
-            req = self.session.get(page, timeout=self.timeout)
+            req = self.session.get(url=page,data=data,timeout=self.timeout)
             self.session.headers['Referer'] = page
         except requests.exceptions.RequestException as e:
             return self.response(http=0, html=e.__doc__)
@@ -34,7 +35,7 @@ class Request(object):
         '''Submits a HTTP POST request.'''
         page = self._quote(page)
         try:
-            req = self.session.post(page, data, timeout=self.timeout)
+            req = self.session.post(url=page, data=data, timeout=self.timeout)
             self.session.headers['Referer'] = page
         except requests.exceptions.RequestException as e:
             return self.response(http=0, html=e.__doc__)
@@ -51,6 +52,50 @@ class Request(object):
         if proxy:
             if not utl.is_url(proxy):
                 raise ValueError('Invalid proxy format!')
-            proxy = {'http':proxy, 'https':proxy}
+            proxy = {'http':proxy['http'], 'https':proxy['https']}
         return proxy
+
+    def get_current_ip(self):
+        if self.my_ip == None:
+            try:
+                # Use ipify service to get the current IP address
+                response = requests.get('https://api.ipify.org')
+                response.raise_for_status()  # Raise an exception for HTTP errors
+                self.my_ip = response.text
+                return self.my_ip
+            
+            except requests.exceptions.RequestException as e:
+                return f"Error: {str(e)}"
+
+
+        else:
+            return self.my_ip
+
+
+    def get_geolocation(self):
+        ip_address = self.get_current_ip()
+        url = f"http://ip-api.com/json/{ip_address}"
+        try:
+            response = requests.get(url)
+            response.raise_for_status()  # Raise an exception for HTTP errors
+            data = response.json()
+            
+            if data['status'] == 'success':
+                location = {
+                    'IP Address': ip_address,
+                    'Country': data.get('country', 'N/A'),
+                    'Region': data.get('regionName', 'N/A'),
+                    'City': data.get('city', 'N/A'),
+                    'Latitude': data.get('lat', 'N/A'),
+                    'Longitude': data.get('lon', 'N/A'),
+                    'ISP': data.get('isp', 'N/A'),
+                    'Organization': data.get('org', 'N/A')
+                }
+            else:
+                location = {'Error': data.get('message', 'Unknown error')}
+
+            return location
+        
+        except requests.exceptions.RequestException as e:
+            return {'Error': str(e)}
 
