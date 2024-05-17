@@ -4,7 +4,7 @@ class UserAgentPool:
     def __init__(self) -> None:
         pass
 
-    def get_random_useragent(self):
+    def get_random_user_agent(self):
         file_path = 'resources/user_agents.txt'
         try:
             with open(file_path, 'r', encoding='utf-8') as file:

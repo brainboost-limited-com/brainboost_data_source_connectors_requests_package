@@ -1,47 +1,56 @@
 import asyncio
-import aiohttp
+import random
+import requests
 import schedule
-from tinydb import TinyDB
+from tinydb import Query, TinyDB
+import time
 
 
 class ProxyPool:
     '''Manages a pool of proxies for HTTP requests.'''
-    def __init__(self):
-        self.proxies_db = TinyDB('resources/proxies_db.json')
+    def __init__(self,proxy_source_url=None):
+        self.proxies_db = TinyDB('src/resources/proxies_db.json')
         self.current_proxy = None
+        if proxy_source_url == None:
+            self.proxy_source_urls = ['https://raw.githubusercontent.com/proxifly/free-proxy-list/main/proxies/all/data.json']
+        self.download_and_update_proxies()
 
-        # Schedule the proxy list update every 10 minutes
-        schedule.every(10).minutes.do(self.update_proxies_from_url_async)
-        # Start the scheduler in a separate thread
-        asyncio.ensure_future(self.run_scheduler())
-
-    async def update_proxies_from_url_async(self):
-        url = 'https://raw.githubusercontent.com/proxifly/free-proxy-list/main/proxies/all/data.json'
-        
+    def download_and_update_proxies(self,more_proxies_json=None):
         try:
-            async with aiohttp.ClientSession() as session:
-                async with session.get(url) as response:
-                    response.raise_for_status()  # Raise an exception for bad status codes
-                    proxies_data = await response.json()
+            if (more_proxies_json==None):
+                response = requests.get(self.proxy_source_urls[0])
+            else:
+                self.proxy_source_urls.push(more_proxies_json)
+                response = requests.get(self.proxy_source_urls[-1])
 
-                    if not isinstance(proxies_data, list):
-                        raise ValueError("Invalid proxy data format")
+            response.raise_for_status()
+            proxies_data = response.json()
 
-                    # Clear existing proxies in the database
-                    self.proxies_db.truncate()
+            for proxy in proxies_data:
+                # Assuming proxy structure in JSON: {"ip": "192.168.1.1", "port": "8080"}
 
-                    # Insert new proxies into the database
-                    for proxy_info in proxies_data:
-                        if 'ip' in proxy_info and 'port' in proxy_info and 'protocol' in proxy_info:
-                            self.proxies_db.insert(dict(proxy_info))
+                self.insert_proxy_if_not_exists(proxy)
+
+        except requests.RequestException as e:
+            print(f"Error downloading or parsing JSON data: {e}")
+
+
+
+    def insert_proxy_if_not_exists(self, proxy):
+        Proxy = Query()
+        existing_proxy = self.proxies_db.search(
+            (Proxy.ip == proxy['ip']) & (Proxy.port == proxy['port'])
+        )
         
-        except aiohttp.ClientError as e:
-            print(f"Error fetching proxies: {e}")
+        proxy['request_time'] = self.test_proxy()
+        if not existing_proxy:            
+            self.proxies_db.insert(proxy)
+            print(f"Inserted proxy: {proxy}")
+        else:
+            self.proxies_db.update({'time_request': proxy['request_time']}, Proxy.ip == proxy['ip'] and Proxy.port == proxy['port'])
+            print(f"Proxy already exists: {proxy}, updating request time {proxy['request_time']}")
 
-    async def run_scheduler(self):
-        while True:
-            await asyncio.sleep(1)  # Sleep briefly to allow other tasks to run
-            schedule.run_pending()
+
 
     def get_random_proxy(self):
         # Retrieve all proxies from the database
@@ -66,3 +75,35 @@ class ProxyPool:
         self.current_proxy = proxy_url
 
         return proxy_url
+
+
+    def get_best_proxy(self):
+        if len(self.proxies_db) == 0:
+            print("No proxies available in the database.")
+            return None
+
+        # Get all proxies from the database
+        all_proxies = self.proxies_db.all()
+
+        # Find the proxy with the minimum response time
+        best_proxy = min(all_proxies, key=lambda p: p.get('time_request', float('inf')))
+
+        print(f"Best proxy: {best_proxy['proxy']} with response time: {best_proxy['time_request']} ms")
+        return best_proxy
+
+
+
+    def test_proxy(proxy):
+        test_url = "http://httpbin.org/ip"
+        try:
+            start_time = time.time()  # Record the start time
+            response = requests.get(test_url, proxies=proxy, timeout=10)
+            response.raise_for_status()  # Raise HTTPError for bad responses (4xx and 5xx)
+            end_time = time.time()  # Record the end time
+
+            response_time = (end_time - start_time) * 1000  # Calculate response time in milliseconds
+            print(f"Proxy is working. Response time: {response_time:.2f} ms")
+            return response_time
+        except requests.RequestException as e:
+            print(f"Proxy failed: {e}")
+            return -1
