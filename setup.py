@@ -6,9 +6,9 @@ setup(
     author='Pablo Tomas Borda',
     author_email='pablotomasborda@hotmail.com',
     description='Sends requests, accepts proxy lists, can use tor proxy',
-    long_description='',
+    long_description=open('README.md').read(),  # Assuming you have a README.md file
     long_description_content_type='text/markdown',
-    url='https://github.com/yourusername/your_package_name',
+    url='https://github.com/brainboost-limited-com/brainboost_data_source_connectors_requests_package',
     packages=find_packages(),
     classifiers=[
         'Development Status :: 3 - Alpha',
@@ -23,7 +23,7 @@ setup(
     ],
     python_requires='>=3.10',
     install_requires=[
-        'tinydb==3.8.1'
+        'tinydb==3.8.1',
         'requests==2.31.0',
         'schedule==1.2.1',
         'aiohttp==3.9.5',
