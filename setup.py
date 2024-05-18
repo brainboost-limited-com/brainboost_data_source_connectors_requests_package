@@ -9,7 +9,7 @@ setup(
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
     url='https://github.com/brainboost-limited-com/brainboost_data_source_connectors_requests_package',
-    package_dir={'': 'src'},
+    package_dir={'brainboost_data_source_requests_package': 'src/brainboost_data_source_requests_package'},
     packages=find_packages(where='src'),
     classifiers=[
         'Development Status :: 3 - Alpha',
