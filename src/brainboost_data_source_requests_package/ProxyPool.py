@@ -9,7 +9,7 @@ import time
 class ProxyPool:
     '''Manages a pool of proxies for HTTP requests.'''
     def __init__(self,proxy_source_url=None):
-        self.proxies_db = TinyDB('src/resources/proxies_db.json')
+        self.proxies_db = TinyDB('src/brainboost_data_source_requests_package/resources/proxies_db.json')
         self.current_proxy = None
         if proxy_source_url == None:
             self.proxy_source_urls = ['https://raw.githubusercontent.com/proxifly/free-proxy-list/main/proxies/all/data.json']

@@ -6,10 +6,11 @@ setup(
     author='Pablo Tomas Borda',
     author_email='pablotomasborda@hotmail.com',
     description='Sends requests, accepts proxy lists, can use tor proxy',
-    long_description=open('README.md').read(),  # Assuming you have a README.md file
+    long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
     url='https://github.com/brainboost-limited-com/brainboost_data_source_connectors_requests_package',
-    packages=find_packages(),
+    package_dir={'': 'src'},
+    packages=find_packages(where='src'),
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',

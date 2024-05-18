@@ -1,0 +1,28 @@
+Metadata-Version: 2.1
+Name: brainboost_data_source_requests_package
+Version: 0.1.0
+Summary: Sends requests, accepts proxy lists, can use tor proxy
+Home-page: https://github.com/brainboost-limited-com/brainboost_data_source_connectors_requests_package
+Author: Pablo Tomas Borda
+Author-email: pablotomasborda@hotmail.com
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: tinydb==3.8.1
+Requires-Dist: requests==2.31.0
+Requires-Dist: schedule==1.2.1
+Requires-Dist: aiohttp==3.9.5
+Requires-Dist: pytest-asyncio
+Requires-Dist: requests[socks]
+Requires-Dist: search_engines@ git+https://github.com/PabloBorda/tools_goldenthinkerextractor.git@7bb819ba7398726876467d64bb777e28b4a9984d#egg=search_engines&subdirectory=Search-Engines-Scraper
+
+# brainboost_data_source_connectors_package

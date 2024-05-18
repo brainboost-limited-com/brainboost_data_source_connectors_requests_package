@@ -1,5 +1,5 @@
 import pytest
-from src.ProxyPool import ProxyPool
+from src.brainboost_data_source_requests_package.ProxyPool import ProxyPool
 
 # Fixture to create an instance of ProxyPool for each test
 @pytest.fixture

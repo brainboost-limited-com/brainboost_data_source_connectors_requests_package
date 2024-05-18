@@ -1,6 +1,6 @@
 import pytest
 from bs4 import BeautifulSoup
-from src.Request import Request
+from src.brainboost_data_source_requests_package.Request import Request
 import json
 
 def test_get_request():
@@ -22,7 +22,7 @@ def test_get_request():
         print("Extracted IP Address:", ip_address)
         
         # Assert if the expected IP address is present in the text
-        expected_ip = "191.110.58.7"
+        expected_ip = "161.10.142.141"
         assert expected_ip in ip_address, f"Expected IP '{expected_ip}' not found in '{ip_address}'"
     else:
         pytest.fail("The element with id 'shownIpv4' was not found.")

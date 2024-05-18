@@ -1,6 +1,6 @@
 import pytest
 from unittest.mock import mock_open, patch
-from src.UserAgentPool import UserAgentPool
+from src.brainboost_data_source_requests_package.UserAgentPool import UserAgentPool
 
 @pytest.fixture
 def user_agent():

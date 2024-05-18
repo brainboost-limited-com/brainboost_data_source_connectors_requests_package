@@ -1,5 +1,5 @@
 import pytest
-from src.TorRequest import TorRequest
+from src.brainboost_data_source_requests_package.TorRequest import TorRequest
 import logging
 
 # Configure logging
