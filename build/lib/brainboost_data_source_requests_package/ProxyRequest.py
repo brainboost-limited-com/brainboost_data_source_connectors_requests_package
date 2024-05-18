@@ -1,6 +1,6 @@
-from src.Request import Request
-from src.ProxyPool import ProxyPool
-from src.UserAgentPool import UserAgentPool
+from src.brainboost_data_source_requests_package.Request import Request
+from src.brainboost_data_source_requests_package.ProxyPool import ProxyPool
+from src.brainboost_data_source_requests_package.UserAgentPool import UserAgentPool
 
 class ProxyRequest(Request):
     def __init__(self, proxy=None):

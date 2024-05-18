@@ -1,7 +1,7 @@
 import requests
 from collections import namedtuple
 from . import utils as utl
-from src.UserAgentPool import UserAgentPool
+from src.brainboost_data_source_requests_package.UserAgentPool import UserAgentPool
 
 class Request(object):
     '''Performs HTTP requests. A `requests` wrapper, essentialy'''
