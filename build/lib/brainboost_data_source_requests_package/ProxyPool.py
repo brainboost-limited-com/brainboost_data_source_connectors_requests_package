@@ -10,7 +10,7 @@ class ProxyPool:
     '''Manages a pool of proxies for HTTP requests.'''
     def __init__(self,proxy_source_url=None,proxy_db=None):
         if proxy_db == None:
-            self.proxies_db = TinyDB('src/brainboost_data_source_requests_package/resources/proxies_db.json')
+            self.proxies_db = TinyDB('/brainboost/data_storage/storage_requests_package/storage_request_proxy_database/proxies_db.json')
         else:
             self.proxies_db = TinyDB(proxy_db)
         self.current_proxy = None
