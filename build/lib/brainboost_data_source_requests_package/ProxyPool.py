@@ -10,9 +10,9 @@ class ProxyPool:
     '''Manages a pool of proxies for HTTP requests.'''
     def __init__(self,proxy_source_url=None,proxy_db=None):
         if proxy_db == None:
-            self.proxy_db = TinyDB('src/brainboost_data_source_requests_package/resources/proxies_db.json')
+            self.proxies_db = TinyDB('src/brainboost_data_source_requests_package/resources/proxies_db.json')
         else:
-            self.proxy_db = TinyDB(proxy_db)
+            self.proxies_db = TinyDB(proxy_db)
         self.current_proxy = None
         if proxy_source_url == None:
             self.proxy_source_urls = ['https://raw.githubusercontent.com/proxifly/free-proxy-list/main/proxies/all/data.json']
@@ -60,9 +60,11 @@ class ProxyPool:
     def get_random_proxy(self):
         # Retrieve all proxies from the database
         proxies = self.proxies_db.all()
-
+        if len(proxies)==0:
+            self.download_and_update_proxies()
         if not proxies:
             # If no proxies are available, return None
+            print('Proxies database is empty')
             return None
         
         # Select a random proxy from the list of proxies
