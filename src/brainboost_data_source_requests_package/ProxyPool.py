@@ -60,9 +60,11 @@ class ProxyPool:
     def get_random_proxy(self):
         # Retrieve all proxies from the database
         proxies = self.proxies_db.all()
-
+        if len(proxies)==0:
+            self.download_and_update_proxies()
         if not proxies:
             # If no proxies are available, return None
+            print('Proxies database is empty')
             return None
         
         # Select a random proxy from the list of proxies

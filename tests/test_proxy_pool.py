@@ -13,7 +13,7 @@ def test_get_random_proxy(proxy_pool):
     proxy_url = proxy_pool.get_random_proxy()
 
     # Proxy URL should be in the correct format
-    print("Selected Proxy is: "+proxy_url)
+    print("Selected Proxy is: " + proxy_url)
     assert proxy_url is not None
 
 def test_proxy(proxy_pool):

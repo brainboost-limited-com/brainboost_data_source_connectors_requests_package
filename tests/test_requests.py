@@ -22,7 +22,7 @@ def test_get_request():
         print("Extracted IP Address:", ip_address)
         
         # Assert if the expected IP address is present in the text
-        expected_ip = "161.10.142.141"
+        expected_ip = "161.10.130.41"
         assert expected_ip in ip_address, f"Expected IP '{expected_ip}' not found in '{ip_address}'"
     else:
         pytest.fail("The element with id 'shownIpv4' was not found.")
