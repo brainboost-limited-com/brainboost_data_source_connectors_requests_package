@@ -17,11 +17,22 @@ Classifier: Operating System :: OS Independent
 Requires-Python: >=3.10
 Description-Content-Type: text/markdown
 License-File: LICENSE
-Requires-Dist: tinydb==3.8.1
+Requires-Dist: beautifulsoup4==4.12.3
+Requires-Dist: certifi==2024.2.2
+Requires-Dist: charset-normalizer==3.3.2
+Requires-Dist: exceptiongroup==1.2.1
+Requires-Dist: idna==3.7
+Requires-Dist: iniconfig==2.0.0
+Requires-Dist: packaging==24.0
+Requires-Dist: pluggy==1.5.0
+Requires-Dist: PySocks==1.7.1
+Requires-Dist: pytest==8.2.0
+Requires-Dist: pytest-asyncio==0.23.6
 Requires-Dist: requests==2.31.0
-Requires-Dist: schedule==1.2.1
-Requires-Dist: aiohttp==3.9.5
-Requires-Dist: pytest-asyncio
+Requires-Dist: soupsieve==2.5
+Requires-Dist: tinydb==3.8.1
+Requires-Dist: tomli==2.0.1
+Requires-Dist: urllib3==2.2.1
 Requires-Dist: requests[socks]
 Requires-Dist: search_engines@ git+https://github.com/PabloBorda/tools_goldenthinkerextractor.git@7bb819ba7398726876467d64bb777e28b4a9984d#egg=search_engines&subdirectory=Search-Engines-Scraper
 

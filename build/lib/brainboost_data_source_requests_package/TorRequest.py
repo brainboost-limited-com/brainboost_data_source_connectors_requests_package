@@ -1,4 +1,4 @@
-from brainboost_data_source_requests_package.ProxyRequest import ProxyRequest
+from .ProxyRequest import ProxyRequest
 
 class TorRequest(ProxyRequest):
     def __init__(self):
