@@ -4,6 +4,10 @@ from . import utils as utl
 from .UserAgentPool import UserAgentPool
 
 class Request(object):
+
+    source_ip_veryfication = False          # This verifies the current interface ip address
+
+
     '''Performs HTTP requests. A `requests` wrapper, essentialy'''
     def __init__(self, timeout=10, proxy=None, user_agent='random'):
         self._useragent_database = UserAgentPool()
@@ -15,22 +19,28 @@ class Request(object):
                 'https': f'socks5h://{proxy["ip"]}:{proxy["port"]}'
             }
 
+        print('I set proxy: ' + str(proxy))
+
         if user_agent == 'random':
             self.session.headers['User-Agent'] = self._useragent_database.get_random_user_agent()
+            print('I set User-Agent: ' + str(proxy))
         else:
             self.session.headers['User-Agent'] = user_agent
         self.session.headers['Accept-Language'] = 'en-GB,en;q=0.5'
         self.timeout = timeout
         self.response = namedtuple('response', ['http', 'html'])
         self.my_ip = None
+        
 
     def get(self, page, data):
         '''Submits a HTTP GET request.'''
         page = self._quote(page)
-        try:
+        try:            
             req = self.session.get(url=page, data=data, timeout=self.timeout)
+            self.toggle_ip_verification(status=False)
             self.session.headers['Referer'] = page
         except requests.exceptions.RequestException as e:
+            self.toggle_ip_verification(status=True)
             return self.response(http=0, html=e.__doc__)
         return self.response(http=req.status_code, html=req.text)
 
@@ -39,8 +49,10 @@ class Request(object):
         page = self._quote(page)
         try:
             req = self.session.post(url=page, data=data, timeout=self.timeout)
+            self.toggle_ip_verification(status=False)
             self.session.headers['Referer'] = page
         except requests.exceptions.RequestException as e:
+            self.toggle_ip_verification(status=True)
             return self.response(http=0, html=e.__doc__)
         return self.response(http=req.status_code, html=req.text)
 
@@ -83,9 +95,15 @@ class Request(object):
                     'Organization': data.get('org', 'N/A')
                 }
             else:
+                print("Geolocation for ip: " + ip_address + ' failed.')
+                Request.toggle_ip_verification(status=False)
                 location = {'Error': data.get('message', 'Unknown error')}
 
             return location
 
         except requests.exceptions.RequestException as e:
             return {'Error': str(e)}
+
+
+    def toggle_ip_verification(self,status):
+        Request.toggle_ip_verification = status

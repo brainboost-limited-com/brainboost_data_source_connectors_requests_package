@@ -10,7 +10,6 @@ brainboost_data_source_requests_package.egg-info/top_level.txt
 src/brainboost_data_source_requests_package/ProxyPool.py
 src/brainboost_data_source_requests_package/ProxyRequest.py
 src/brainboost_data_source_requests_package/Request.py
-src/brainboost_data_source_requests_package/RequestRotative.py
 src/brainboost_data_source_requests_package/TorRequest.py
 src/brainboost_data_source_requests_package/UserAgentPool.py
 src/brainboost_data_source_requests_package/__init__.py
