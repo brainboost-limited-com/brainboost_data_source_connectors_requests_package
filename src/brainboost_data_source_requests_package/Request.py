@@ -110,5 +110,5 @@ class Request(object):
     def toggle_ip_verification(self,status):
         Request.toggle_ip_verification = status
 
-    def verify_sender_ip():
+    def verify_sender_ip(self):
         pass

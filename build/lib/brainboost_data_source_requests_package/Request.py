@@ -35,7 +35,8 @@ class Request(object):
     def get(self, page, data):
         '''Submits a HTTP GET request.'''
         page = self._quote(page)
-        try:            
+        try:
+            self.verify_sender_ip()
             req = self.session.get(url=page, data=data, timeout=self.timeout)
             self.toggle_ip_verification(status=False)
             self.session.headers['Referer'] = page
@@ -48,6 +49,7 @@ class Request(object):
         '''Submits a HTTP POST request.'''
         page = self._quote(page)
         try:
+            self.verify_sender_ip()
             req = self.session.post(url=page, data=data, timeout=self.timeout)
             self.toggle_ip_verification(status=False)
             self.session.headers['Referer'] = page
@@ -107,3 +109,6 @@ class Request(object):
 
     def toggle_ip_verification(self,status):
         Request.toggle_ip_verification = status
+
+    def verify_sender_ip():
+        pass
