@@ -21,7 +21,7 @@ class ProxyRequest(Request):
     
 
 
-    def verify_sender_ip():
+    def verify_sender_ip(self):
         try:
             # Run the ifconfig command and capture the output
             result = subprocess.run(['ifconfig'], capture_output=True, text=True)
