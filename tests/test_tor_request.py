@@ -43,3 +43,13 @@ def test_post_request(tor_request):
     assert current_location['Country'] != 'Colombia'
     
     # Country will likely be different to Colombia.
+
+
+# Test the IP verification method
+def test_verify_sender_ip(tor_request):
+    result = tor_request.verify_sender_ip()
+
+    logger.info(f"IP verification result: {result}")
+
+    # Since we expect the IP verification to succeed, we check if result is True
+    assert result

@@ -32,7 +32,7 @@ class Request(object):
         self.my_ip = None
         
 
-    def get(self, page, data):
+    def get(self, page, data={}):
         '''Submits a HTTP GET request.'''
         page = self._quote(page)
         try:
@@ -45,7 +45,7 @@ class Request(object):
             return self.response(http=0, html=e.__doc__)
         return self.response(http=req.status_code, html=req.text)
 
-    def post(self, page, data):
+    def post(self, page, data={}):
         '''Submits a HTTP POST request.'''
         page = self._quote(page)
         try:
@@ -76,9 +76,26 @@ class Request(object):
                 return f"Error: {str(e)}"
         else:
             return self.my_ip
+        
 
-    def get_geolocation(self):
-        ip_address = self.get_current_ip()
+
+    def get_naked_ip(self):
+        try:
+            # Method 1: Using an external service
+            response = requests.get('https://api.ipify.org', timeout=10)
+            response.raise_for_status()  # Raise an exception for HTTP errors
+            return response.text
+        except requests.RequestException as e:
+            print(f"Error using external service: {e}") 
+
+
+
+
+    def get_geolocation(self,another_ip=None):
+        if another_ip==None:
+            ip_address = self.get_current_ip()
+        else:
+            ip_address = another_ip
         url = f"http://ip-api.com/json/{ip_address}"
         try:
             response = self.session.get(url)

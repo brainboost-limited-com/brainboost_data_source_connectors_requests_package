@@ -32,7 +32,7 @@ class Request(object):
         self.my_ip = None
         
 
-    def get(self, page, data):
+    def get(self, page, data={}):
         '''Submits a HTTP GET request.'''
         page = self._quote(page)
         try:
@@ -45,7 +45,7 @@ class Request(object):
             return self.response(http=0, html=e.__doc__)
         return self.response(http=req.status_code, html=req.text)
 
-    def post(self, page, data):
+    def post(self, page, data={}):
         '''Submits a HTTP POST request.'''
         page = self._quote(page)
         try:
@@ -108,7 +108,7 @@ class Request(object):
 
 
     def toggle_ip_verification(self,status):
-        Request.toggle_ip_verification = status
+        Request.source_ip_verification = status
 
     def verify_sender_ip(self):
         pass
