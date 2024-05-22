@@ -1,4 +1,5 @@
 import random
+from configuration import storage_user_agent_pool_database_path
 
 class UserAgentPool:
     def __init__(self,user_agents_list_path=None) -> None:
@@ -7,7 +8,7 @@ class UserAgentPool:
 
     def get_random_user_agent(self):
         if self.user_agent_list_path == None:
-            file_path = 'src/brainboost_data_source_requests_package/resources/user_agents.txt'
+            file_path = storage_user_agent_pool_database_path
         else:
             file_path = self.user_agent_list_path
         try:

@@ -4,13 +4,13 @@ import requests
 
 from tinydb import Query, TinyDB
 import time
-
+from configuration import storage_proxy_pool_database_path
 
 class ProxyPool:
     '''Manages a pool of proxies for HTTP requests.'''
     def __init__(self,proxy_source_url=None,proxy_db=None):
         if proxy_db == None:
-            self.proxies_db = TinyDB('src/brainboost_data_source_requests_package/resources/')
+            self.proxies_db = TinyDB(storage_proxy_pool_database_path)
         else:
             self.proxies_db = TinyDB(proxy_db)
         self.current_proxy = None
